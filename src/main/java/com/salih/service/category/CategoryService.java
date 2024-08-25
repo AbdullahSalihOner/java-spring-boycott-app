@@ -1,22 +1,30 @@
 package com.salih.service.category;
 
+import com.salih.dto.category.CategoryDto;
+import com.salih.model.entity.Brand;
 import com.salih.model.entity.Category;
+import com.salih.repository.BrandRepository;
 import com.salih.repository.CategoryRepository;
 import com.salih.result.DataResult;
 import com.salih.result.Result;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
 public class CategoryService implements ICategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final BrandRepository brandRepository;
 
 
+    // FIXME : bu metod brandleri getirmiyor boş döndürüyor problemi çöz
     @Override
     public DataResult<List<Category>> getAllCategories() {
         List<Category> categories = categoryRepository.findAll();
@@ -36,10 +44,21 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public Result addCategory(Category category) {
+    public Result addCategory(CategoryDto category) {
+
+        Set<Brand> selectedBrands = new HashSet<>();
+
+        for (Long brandId : category.getBrandIds()) {
+            Optional<Brand> brand = brandRepository.findById(brandId);
+            if (brand.isEmpty()) {
+                return Result.showMessage(Result.NOT_FOUND, "Brand not found");
+            }
+            selectedBrands.add(brand.get());
+        }
+
         Category addedCategory = Category.builder()
                 .name(category.getName())
-                .brands(category.getBrands())
+                .brands(selectedBrands)
                 .build();
 
         try {
@@ -51,14 +70,25 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public Result updateCategory(Long id, Category category) {
+    public Result updateCategory(Long id, CategoryDto category) {
         Optional<Category> categoryOptional = categoryRepository.findById(id);
         if (categoryOptional.isEmpty()) {
             return Result.showMessage(Result.NOT_FOUND, "Category not found");
         }
+
+        Set<Brand> selectedBrands = new HashSet<>();
+
+        for (Long brandId : category.getBrandIds()) {
+            Optional<Brand> brand = brandRepository.findById(brandId);
+            if (brand.isEmpty()) {
+                return Result.showMessage(Result.NOT_FOUND, "Brand not found");
+            }
+            selectedBrands.add(brand.get());
+        }
+
         Category updatedCategory = categoryOptional.get();
         updatedCategory.setName(category.getName());
-        updatedCategory.setBrands(category.getBrands());
+        updatedCategory.setBrands(selectedBrands);
         categoryRepository.save(updatedCategory);
         return Result.showMessage(Result.SUCCESS, "Category updated");
     }

@@ -1,16 +1,24 @@
 package com.salih.service.product;
 
 
+import com.salih.dto.product.ProductDto;
+import com.salih.exception.CategoryNotFoundException;
+import com.salih.model.entity.Brand;
+import com.salih.model.entity.Category;
 import com.salih.model.entity.Product;
+import com.salih.repository.BrandRepository;
+import com.salih.repository.CategoryRepository;
 import com.salih.repository.ProductRepository;
 import com.salih.result.DataResult;
 import com.salih.result.Result;
+import com.salih.service.category.CategoryService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 
 @RequiredArgsConstructor
@@ -18,7 +26,11 @@ import java.util.Optional;
 public class ProductService implements IProductService {
 
     private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
+    private final BrandRepository brandRepository;
 
+
+    // FIXME : bu metod brandleri ve categoryleri getirmiyor boş döndürüyor problemi çöz
     @Override
     public DataResult<List<Product>> getAllProducts() {
         List<Product> products = productRepository.findAll();
@@ -39,15 +51,19 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public Result addProduct(Product product) {
-        
+    public Result addProduct(ProductDto product) {
+
+        Category selectedCaytegory  = categoryRepository.findById(product.getCategoryId()).orElseThrow(() -> new CategoryNotFoundException("Category not found"));
+
+        Brand selectedBrand = brandRepository.findById(product.getBrandId()).orElseThrow(() -> new CategoryNotFoundException("Brand not found"));
+
         Product addedProduct = Product.builder()
                 .name(product.getName())
                 .isBoycott(product.getIsBoycott())
                 .barCode(product.getBarCode())
                 .image(product.getImage())
-                .category(product.getCategory() )
-                .brand(product.getBrand())
+                .category(selectedCaytegory )
+                .brand( selectedBrand)
                 .build();
 
         try {
@@ -59,18 +75,22 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public Result updateProduct(Long id, Product product) {
+    public Result updateProduct(Long id, ProductDto product) {
         Optional<Product> productOptional = productRepository.findById(id);
         if (productOptional.isEmpty()) {
             return Result.showMessage(Result.NOT_FOUND, "Product not found");
         }
+
+        Category selectedCaytegory  = categoryRepository.findById(product.getCategoryId()).orElseThrow(() -> new CategoryNotFoundException("Category not found"));
+        Brand selectedBrand = brandRepository.findById(product.getBrandId()).orElseThrow(() -> new CategoryNotFoundException("Brand not found"));
+
         Product updatedProduct = productOptional.get();
         updatedProduct.setName(product.getName());
         updatedProduct.setIsBoycott(product.getIsBoycott());
         updatedProduct.setBarCode(product.getBarCode());
         updatedProduct.setImage(product.getImage());
-        updatedProduct.setCategory(product.getCategory());
-        updatedProduct.setBrand(product.getBrand());
+        updatedProduct.setCategory(selectedCaytegory);
+        updatedProduct.setBrand(selectedBrand);
         try {
             productRepository.save(updatedProduct);
         } catch (Exception e) {

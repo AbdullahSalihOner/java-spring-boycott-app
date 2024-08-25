@@ -1,6 +1,7 @@
 package com.salih.controller;
 
 
+import com.salih.dto.category.CategoryDto;
 import com.salih.model.entity.Category;
 import com.salih.model.entity.Category;
 import com.salih.result.DataResult;
@@ -22,7 +23,7 @@ public class CategoryController {
 
     @GetMapping("/all")
     public ResponseEntity<DataResult<List<Category>>> getAllCategories(){
-        DataResult<List<Category>> result = categoryService.getAll();
+        DataResult<List<Category>> result = categoryService.getAllCategories();
         if (result.getData() == null || result.getData().isEmpty()){
             return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
         }
@@ -31,7 +32,7 @@ public class CategoryController {
     
     @GetMapping("get/{id}")
     public ResponseEntity<DataResult<Category>> getCategoryById(@PathVariable Long id){
-        DataResult<Category> result = categoryService.getById(id);
+        DataResult<Category> result = categoryService.getCategoryById(id);
         if (result.getData() == null){
             return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
         }
@@ -39,8 +40,8 @@ public class CategoryController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Result> addCategory(@RequestBody Category category){
-        Result result = categoryService.add(category);
+    public ResponseEntity<Result> addCategory(@RequestBody CategoryDto category){
+        Result result = categoryService.addCategory(category);
         if (result.getResultCode() != 0){
             return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -48,8 +49,8 @@ public class CategoryController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Result> updateCategory(@PathVariable Long id, @RequestBody Category category){
-        Result result = categoryService.update(id, category);
+    public ResponseEntity<Result> updateCategory(@PathVariable Long id, @RequestBody CategoryDto category){
+        Result result = categoryService.updateCategory(id, category);
         if (result.getResultCode() != 0){
             return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -58,7 +59,7 @@ public class CategoryController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Result> deleteCategory(@PathVariable Long id){
-        Result result = categoryService.delete(id);
+        Result result = categoryService.deleteCategory(id);
         if (result.getResultCode() != 3){
             return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
         }

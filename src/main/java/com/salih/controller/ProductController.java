@@ -1,5 +1,6 @@
 package com.salih.controller;
 
+import com.salih.dto.product.ProductDto;
 import com.salih.model.entity.Product;
 import com.salih.result.DataResult;
 import com.salih.result.Result;
@@ -40,7 +41,7 @@ public class ProductController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Result> addProduct(@RequestBody Product product){
+    public ResponseEntity<Result> addProduct(@RequestBody ProductDto product){
         Result result = productService.addProduct(product);
         if (result.getResultCode() != 0){
             return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -49,7 +50,7 @@ public class ProductController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Result> updateProduct(@PathVariable Long id, @RequestBody Product product){
+    public ResponseEntity<Result> updateProduct(@PathVariable Long id, @RequestBody ProductDto product){
         Result result = productService.updateProduct(id, product);
         if (result.getResultCode() != 0){
             return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);

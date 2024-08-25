@@ -1,6 +1,7 @@
 package com.salih.controller;
 
 
+import com.salih.dto.brand.BrandDto;
 import com.salih.model.entity.Brand;
 import com.salih.result.DataResult;
 import com.salih.result.Result;
@@ -21,7 +22,7 @@ public class BrandController {
 
     @GetMapping("/all")
     public ResponseEntity<DataResult<List<Brand>>> getAllBrands(){
-        DataResult<List<Brand>> result = brandService.getAll();
+        DataResult<List<Brand>> result = brandService.getAllBrands();
         if (result.getData() == null || result.getData().isEmpty()){
             return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
         }
@@ -31,7 +32,7 @@ public class BrandController {
     //@GetMapping("") //@RequestParam is work like this: /api/brand?id=1
     @GetMapping("get/{id}")
     public ResponseEntity<DataResult<Brand>> getBrandById(@PathVariable Long id){
-        DataResult<Brand> result = brandService.getById(id);
+        DataResult<Brand> result = brandService.getBrandById(id);
         if (result.getData() == null){
             return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
         }
@@ -39,8 +40,8 @@ public class BrandController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Result> addBrand(@RequestBody Brand brand){
-        Result result = brandService.add(brand);
+    public ResponseEntity<Result> addBrand(@RequestBody BrandDto brand){
+        Result result = brandService.addBrand(brand);
         if (result.getResultCode() != 0){
             return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -48,8 +49,8 @@ public class BrandController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Result> updateBrand(@PathVariable Long id, @RequestBody Brand brand){
-        Result result = brandService.update(id, brand);
+    public ResponseEntity<Result> updateBrand(@PathVariable Long id, @RequestBody BrandDto brand){
+        Result result = brandService.updateBrand(id, brand);
         if (result.getResultCode() != 0){
             return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -58,7 +59,7 @@ public class BrandController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Result> deleteBrand(@PathVariable Long id){
-        Result result = brandService.delete(id);
+        Result result = brandService.deleteBrand(id);
         if (result.getResultCode() != 3){
             return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
         }

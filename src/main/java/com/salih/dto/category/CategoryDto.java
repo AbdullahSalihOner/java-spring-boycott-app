@@ -18,6 +18,6 @@ import java.util.Set;
 public class CategoryDto {
 
     private String name;
-    private Set<Brand> brandIds;
+    private Set<Long> brandIds;
 
 }
