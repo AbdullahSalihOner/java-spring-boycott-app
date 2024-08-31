@@ -1,5 +1,6 @@
 package com.salih.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,10 +26,16 @@ public class Brand {
     @Column(name = "name", nullable = false ,unique = true)
     private String name;
 
+    @Column(name = "proof", nullable = true)
+    private String proof;
+
     @Column(name = "logo", nullable = true ,unique = true)
     private String logo;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+
+    @JsonInclude
+    @ManyToMany(fetch = FetchType.EAGER,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "brand_categories",
             joinColumns = @JoinColumn(name = "brand_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))

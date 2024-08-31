@@ -1,6 +1,7 @@
 package com.salih.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,13 +34,13 @@ public class Product {
     @Column(name = "image", nullable = true ,unique = false)
     private String image;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JsonInclude
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JsonInclude
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "brand_id", nullable = false)
     private Brand brand;
 

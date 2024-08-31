@@ -34,6 +34,7 @@ public class CategoryService implements ICategoryService {
         return new DataResult<>(categories, Result.showMessage(Result.SUCCESS, " Categories listed successfully"));
     }
 
+    // FIXME : bu metod brandleri getirmiyor boş döndürüyor problemi çöz
     @Override
     public DataResult<Category> getCategoryById(Long id) {
         Optional<Category> category = categoryRepository.findById(id);
@@ -43,6 +44,7 @@ public class CategoryService implements ICategoryService {
         return new DataResult<>(category.get(), Result.showMessage(Result.SUCCESS, "Category found"));
     }
 
+    // Çalışıyor
     @Override
     public Result addCategory(CategoryDto category) {
 
@@ -69,6 +71,7 @@ public class CategoryService implements ICategoryService {
         return Result.showMessage(Result.SUCCESS, "Category added");
     }
 
+    // Çalışıyor
     @Override
     public Result updateCategory(Long id, CategoryDto category) {
         Optional<Category> categoryOptional = categoryRepository.findById(id);
@@ -93,6 +96,7 @@ public class CategoryService implements ICategoryService {
         return Result.showMessage(Result.SUCCESS, "Category updated");
     }
 
+    // Çalışıyor
     @Override
     public Result deleteCategory(Long id) {
         Boolean isExist = categoryRepository.existsById(id);

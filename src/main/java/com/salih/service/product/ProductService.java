@@ -30,7 +30,7 @@ public class ProductService implements IProductService {
     private final BrandRepository brandRepository;
 
 
-    // FIXME : bu metod brandleri ve categoryleri getirmiyor boş döndürüyor problemi çöz
+    // Çözüldü: bu metod brandleri ve categoryleri getirmiyor boş döndürüyor problemi çöz
     @Override
     public DataResult<List<Product>> getAllProducts() {
         List<Product> products = productRepository.findAll();

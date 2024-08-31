@@ -24,6 +24,7 @@ public class BrandService implements IBrandService {
     private final CategoryRepository categoryRepository;
 
 
+    // FIXME : bu metod bazılarının categorylerini getirir bazılarının getirmez problemi çöz
     @Override
     public DataResult<List<Brand>> getAllBrands() {
         List<Brand> brands = brandRepository.findAll();
@@ -43,12 +44,13 @@ public class BrandService implements IBrandService {
             return new DataResult<>(null, Result.showMessage(Result.NOT_FOUND, "Brand not found"));
         }
 
-        Hibernate.initialize(brand.get().getCategories());
 
         return new DataResult<>(brand.get(), Result.showMessage(Result.SUCCESS, "Brand found"));
 
     }
 
+
+    // FIXME : bazen category eklemiyor
     @Override
     public Result addBrand(BrandDto brand) {
 
@@ -101,6 +103,7 @@ public class BrandService implements IBrandService {
         return Result.showMessage(Result.SUCCESS, "Brand updated");
     }
 
+    // FIXME : silme işlemi gerçekleşmiyor çakışma hatası var
     @Override
     public Result deleteBrand(Long id) {
         Boolean isExist = brandRepository.existsById(id);
