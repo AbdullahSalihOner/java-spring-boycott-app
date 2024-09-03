@@ -26,8 +26,9 @@ public class Category {
     private String name;
 
     @ManyToMany(fetch = FetchType.LAZY,
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
-            mappedBy = "categories")
-    @JsonIgnore
-    private Set<Brand> brands = new HashSet<>();
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+                    CascadeType.REFRESH, CascadeType.DETACH})
+    @JoinTable(name = "brand_categories", joinColumns = @JoinColumn(name = "category_id"),
+            inverseJoinColumns = @JoinColumn(name = "brand_id"))
+    private Set<Brand> brands;
 }

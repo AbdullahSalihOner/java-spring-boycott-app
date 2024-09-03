@@ -2,6 +2,7 @@ package com.salih.controller;
 
 
 import com.salih.dto.brand.BrandDto;
+
 import com.salih.model.entity.Brand;
 import com.salih.result.DataResult;
 import com.salih.result.Result;
@@ -12,12 +13,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/brand")
 public class BrandController {
-    
+
     private final BrandService brandService;
 
     @GetMapping("/all")
@@ -38,6 +40,17 @@ public class BrandController {
         }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+    @PostMapping("/getBrandByName")
+    public DataResult<Brand> getBrandByName(@RequestBody Map<String, String> request) {
+        String name = request.get("name");
+        if (name == null || name.isEmpty()) {
+            return new DataResult<>(null, Result.showMessage(Result.BAD_REQUEST, "Brand name must be provided"));
+        }
+
+        return brandService.getBrandByName(name);
+    }
+
 
     @PostMapping("/add")
     public ResponseEntity<Result> addBrand(@RequestBody BrandDto brand){
@@ -68,6 +81,6 @@ public class BrandController {
         }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-    
+
 
 }

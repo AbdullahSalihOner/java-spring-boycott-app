@@ -33,24 +33,13 @@ public class Brand {
     private String logo;
 
 
-    @JsonInclude
-    @ManyToMany(fetch = FetchType.EAGER,
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST,CascadeType.MERGE,
+                    CascadeType.REFRESH, CascadeType.DETACH})
     @JoinTable(name = "brand_categories",
             joinColumns = @JoinColumn(name = "brand_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
-    private Set<Category> categories = new HashSet<>();
+    private Set<Category> categories;
 
-    public void addCategory(Category category){
-        this.categories.add(category); //
-        category.getBrands().add(this);//
-    }
 
-    public void removeCategory(Long categoryId){
-        Category category = this.categories.stream().filter(c -> c.getId() == categoryId).findFirst().orElse(null);
-        if(category != null){
-            this.categories.remove(category);
-            category.getBrands().remove(this);
-        }
-    }
 }

@@ -1,8 +1,7 @@
 package com.salih.service.category;
 
 import com.salih.dto.category.CategoryDto;
-import com.salih.model.entity.Category
-;
+import com.salih.model.entity.Category;
 import com.salih.result.DataResult;
 import com.salih.result.Result;
 

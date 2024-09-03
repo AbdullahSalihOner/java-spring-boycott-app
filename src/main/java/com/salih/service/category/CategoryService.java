@@ -8,7 +8,6 @@ import com.salih.repository.CategoryRepository;
 import com.salih.result.DataResult;
 import com.salih.result.Result;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;

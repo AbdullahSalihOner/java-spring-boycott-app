@@ -1,8 +1,12 @@
 package com.salih.result;
 
 
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
 public class Result {
+
     private final int resultCode;
     private final String resultText;
 
@@ -15,6 +19,7 @@ public class Result {
     public static final Result SERVER_ERROR = new Result(1, "SERVER ERROR!");
     public static final Result VALIDATION_ERROR = new Result(2, "VALIDATION ERROR!");
     public static final Result NOT_FOUND = new Result(3, "RESOURCE NOT FOUND!");
+    public static final Result BAD_REQUEST = new Result(4, "BAD REQUEST!");
 
     // Copy constructor
     public Result(Result result) {
@@ -22,12 +27,13 @@ public class Result {
         this.resultText = result.resultText;
     }
 
-    public int getResultCode() {
-        return resultCode;
+    // Method to check if the result is a success
+    public boolean isSuccess() {
+        return this.resultCode == 0;
     }
 
-    public String getResultText() {
-        return resultText;
+    public String getMessage() {
+        return this.resultText;
     }
 
     public static Result showMessage(Result resultType, String customMessage) {
@@ -42,3 +48,4 @@ public class Result {
                 '}';
     }
 }
+

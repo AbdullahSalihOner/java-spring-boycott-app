@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -39,6 +40,18 @@ public class ProductController {
         }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+    @PostMapping("/getProductByName")
+    public DataResult<Product> getProductByName(@RequestBody Map<String, String> request) {
+        String name = request.get("name");
+        if (name == null || name.isEmpty()) {
+            return new DataResult<>(null, Result.showMessage(Result.BAD_REQUEST, "Product name must be provided"));
+        }
+
+        return productService.getProductByName(name);
+    }
+
+
 
     @PostMapping("/add")
     public ResponseEntity<Result> addProduct(@RequestBody ProductDto product){

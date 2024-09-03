@@ -1,8 +1,8 @@
 package com.salih.controller;
 
 
+
 import com.salih.dto.category.CategoryDto;
-import com.salih.model.entity.Category;
 import com.salih.model.entity.Category;
 import com.salih.result.DataResult;
 import com.salih.result.Result;
@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/category")
 public class CategoryController {
-    
+
     private final CategoryService categoryService;
 
     @GetMapping("/all")
@@ -29,7 +29,7 @@ public class CategoryController {
         }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-    
+
     @GetMapping("get/{id}")
     public ResponseEntity<DataResult<Category>> getCategoryById(@PathVariable Long id){
         DataResult<Category> result = categoryService.getCategoryById(id);
@@ -68,6 +68,6 @@ public class CategoryController {
         }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-    
+
 
 }

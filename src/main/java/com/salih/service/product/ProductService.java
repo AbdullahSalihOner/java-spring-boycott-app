@@ -51,6 +51,15 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    public DataResult<Product> getProductByName(String name) {
+        Optional<Product> product = productRepository.findByName(name);
+        if (product.isEmpty()) {
+            return new DataResult<>(null, Result.showMessage(Result.NOT_FOUND, "Product not found"));
+        }
+        return new DataResult<>(product.get(), Result.showMessage(Result.SUCCESS, "Product found"));
+    }
+
+    @Override
     public Result addProduct(ProductDto product) {
 
         Category selectedCaytegory  = categoryRepository.findById(product.getCategoryId()).orElseThrow(() -> new CategoryNotFoundException("Category not found"));

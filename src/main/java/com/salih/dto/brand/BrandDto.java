@@ -1,7 +1,5 @@
 package com.salih.dto.brand;
 
-
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -21,7 +19,7 @@ public class BrandDto {
     @NotNull
     private String name;
     private String logo;
-
+    private String proof;
     @NotBlank
     @NotNull
     private Set<Long> categoryIds;

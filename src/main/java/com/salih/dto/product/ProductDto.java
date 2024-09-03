@@ -1,7 +1,6 @@
 package com.salih.dto.product;
 
-import com.salih.dto.brand.BrandDto;
-import com.salih.dto.category.CategoryDto;
+
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 

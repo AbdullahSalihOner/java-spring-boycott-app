@@ -10,6 +10,7 @@ import java.util.List;
 public interface IBrandService {
     DataResult<List<Brand>> getAllBrands();
     DataResult<Brand> getBrandById(Long id);
+    DataResult<Brand> getBrandByName(String name);
     Result addBrand(BrandDto brand);
     Result updateBrand(Long brandId,BrandDto brand);
     Result deleteBrand(Long id);

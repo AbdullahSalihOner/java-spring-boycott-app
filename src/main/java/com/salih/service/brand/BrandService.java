@@ -8,13 +8,12 @@ import com.salih.repository.CategoryRepository;
 import com.salih.result.DataResult;
 import com.salih.result.Result;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+
+
 
 @RequiredArgsConstructor
 @Service
@@ -23,19 +22,14 @@ public class BrandService implements IBrandService {
     private final BrandRepository brandRepository;
     private final CategoryRepository categoryRepository;
 
-
-    // FIXME : bu metod bazılarının categorylerini getirir bazılarının getirmez problemi çöz
     @Override
     public DataResult<List<Brand>> getAllBrands() {
         List<Brand> brands = brandRepository.findAll();
         if (brands.isEmpty()) {
-            return new DataResult<>(null,Result.showMessage(Result.SERVER_ERROR, " Brands not found"));
+            return new DataResult<>(null, Result.showMessage(Result.SERVER_ERROR, "Brands not found"));
         }
-        return new DataResult<>(brands, Result.showMessage(Result.SUCCESS, " Brands listed successfully"));
+        return new DataResult<>(brands, Result.showMessage(Result.SUCCESS, "Brands listed successfully"));
     }
-
-
-    // FIXME : bu metod categoryleri getirmiyor boş döndürüyor problemi çöz
 
     @Override
     public DataResult<Brand> getBrandById(Long id) {
@@ -43,20 +37,25 @@ public class BrandService implements IBrandService {
         if (brand.isEmpty()) {
             return new DataResult<>(null, Result.showMessage(Result.NOT_FOUND, "Brand not found"));
         }
-
-
         return new DataResult<>(brand.get(), Result.showMessage(Result.SUCCESS, "Brand found"));
-
     }
 
-
-    // FIXME : bazen category eklemiyor
     @Override
-    public Result addBrand(BrandDto brand) {
+    public DataResult<Brand> getBrandByName(String name) {
+        Optional<Brand> brandOptional = brandRepository.findByName(name);
+        if (brandOptional.isEmpty()) {
+            return new DataResult<>(null, Result.showMessage(Result.NOT_FOUND, "Brand not found"));
+        }
 
+        Brand brand = brandOptional.get();
+        return new DataResult<>(brand, Result.showMessage(Result.SUCCESS, "Brand found successfully"));
+    }
+
+    @Override
+    public Result addBrand(BrandDto brandDto) {
         Set<Category> selectedCategories = new HashSet<>();
 
-        for (Long categoryId : brand.getCategoryIds()) {
+        for (Long categoryId : brandDto.getCategoryIds()) {
             Optional<Category> category = categoryRepository.findById(categoryId);
             if (category.isEmpty()) {
                 return Result.showMessage(Result.NOT_FOUND, "Category not found");
@@ -65,11 +64,11 @@ public class BrandService implements IBrandService {
         }
 
         Brand addedBrand = Brand.builder()
-                .name(brand.getName())
-                .logo(brand.getLogo())
+                .name(brandDto.getName())
+                .logo(brandDto.getLogo())
+                .proof(brandDto.getProof())
                 .categories(selectedCategories)
                 .build();
-
         try {
             brandRepository.save(addedBrand);
         } catch (Exception e) {
@@ -79,7 +78,7 @@ public class BrandService implements IBrandService {
     }
 
     @Override
-    public Result updateBrand(Long id, BrandDto brand) {
+    public Result updateBrand(Long id, BrandDto brandDto) {
         Optional<Brand> brandOptional = brandRepository.findById(id);
         if (brandOptional.isEmpty()) {
             return Result.showMessage(Result.NOT_FOUND, "Brand not found");
@@ -87,7 +86,7 @@ public class BrandService implements IBrandService {
 
         Set<Category> selectedCategories = new HashSet<>();
 
-        for (Long categoryId : brand.getCategoryIds()) {
+        for (Long categoryId : brandDto.getCategoryIds()) {
             Optional<Category> category = categoryRepository.findById(categoryId);
             if (category.isEmpty()) {
                 return Result.showMessage(Result.NOT_FOUND, "Category not found");
@@ -96,21 +95,25 @@ public class BrandService implements IBrandService {
         }
 
         Brand updatedBrand = brandOptional.get();
-        updatedBrand.setName(brand.getName());
-        updatedBrand.setLogo(brand.getLogo());
+        updatedBrand.setName(brandDto.getName());
+        updatedBrand.setLogo(brandDto.getLogo());
         updatedBrand.setCategories(selectedCategories);
         brandRepository.save(updatedBrand);
         return Result.showMessage(Result.SUCCESS, "Brand updated");
     }
 
-    // FIXME : silme işlemi gerçekleşmiyor çakışma hatası var
     @Override
     public Result deleteBrand(Long id) {
         Boolean isExist = brandRepository.existsById(id);
         if (!isExist) {
             return Result.showMessage(Result.NOT_FOUND, "Brand not found");
         }
-        brandRepository.deleteById(id);
+        try {
+            brandRepository.deleteById(id);
+        } catch (Exception e) {
+            return Result.showMessage(Result.SERVER_ERROR, "Brand not deleted due to conflict");
+        }
+
         return Result.showMessage(Result.SUCCESS, "Brand deleted");
     }
 }
